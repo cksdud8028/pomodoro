@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:sprintf/sprintf.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 enum TimerStatus { running, paused, stopped, resting }
 
@@ -14,17 +15,27 @@ class _TimerScreen extends State<TimerScreen> {
   static const WORK_SECONDS = 25;
   static const REST_SECONDS = 5;
 
-  late TimerStatus _timerStatus;
-  late int _timer;
-  late int _pomodoroCount;
+  TimerStatus _timerStatus = TimerStatus.stopped;
+  int _timer = WORK_SECONDS;
+  int _pomodoroCount = 0;
 
-  @override
   void initStatus() {
     super.initState();
     _timerStatus = TimerStatus.stopped;
     print(_timerStatus.toString());
     _timer = WORK_SECONDS;
     _pomodoroCount = 0;
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 5,
+      backgroundColor: Colors.white,
+      fontSize: 16,
+    );
   }
 
   @override
@@ -138,7 +149,7 @@ class _TimerScreen extends State<TimerScreen> {
   }
 
   void runTimer() async {
-    Timer.periodic(Duration(seconds: 1), (t) {
+    Timer.periodic(const Duration(seconds: 1), (t) {
       switch (_timerStatus) {
         case TimerStatus.paused:
           t.cancel();
@@ -148,7 +159,7 @@ class _TimerScreen extends State<TimerScreen> {
           break;
         case TimerStatus.running:
           if (_timer <= 0) {
-            print("작업 완료!");
+            showToast("작업 완료!");
             rest();
           } else {
             setState(() {
@@ -161,7 +172,7 @@ class _TimerScreen extends State<TimerScreen> {
             setState(() {
               _pomodoroCount += 0;
             });
-            print("오늘 $_pomodoroCount개의 뽀모도로를 달성했습니다.");
+            showToast("오늘 $_pomodoroCount개의 뽀모도로를 달성했습니다.");
             t.cancel();
             stop();
           } else {
