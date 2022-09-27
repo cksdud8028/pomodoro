@@ -19,7 +19,8 @@ class _TimerScreen extends State<TimerScreen> {
   int _timer = WORK_SECONDS;
   int _pomodoroCount = 0;
 
-  void initStatus() {
+  @override
+  void initState() {
     super.initState();
     _timerStatus = TimerStatus.stopped;
     print(_timerStatus.toString());
