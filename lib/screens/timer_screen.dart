@@ -170,7 +170,7 @@ class _TimerScreen extends State<TimerScreen> {
         case TimerStatus.resting:
           if (_timer <= 0) {
             setState(() {
-              _pomodoroCount += 0;
+              _pomodoroCount += 1;
             });
             showToast("오늘 $_pomodoroCount개의 뽀모도로를 달성했습니다.");
             t.cancel();
