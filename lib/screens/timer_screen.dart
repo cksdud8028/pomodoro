@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 enum TimerStatus { running, paused, stopped, resting }
@@ -123,7 +125,46 @@ class _TimerScreen extends State<TimerScreen> {
   void stop() {
     setState(() {
       _timerStatus = TimerStatus.stopped;
+      _timer = WORK_SECONDS;
       print("[=>] " + _timerStatus.toString());
+    });
+  }
+
+  void runTimer() async {
+    Timer.periodic(Duration(seconds: 1), (t) {
+      switch (_timerStatus) {
+        case TimerStatus.paused:
+          t.cancel();
+          break;
+        case TimerStatus.stopped:
+          t.cancel();
+          break;
+        case TimerStatus.running:
+          if (_timer <= 0) {
+            print("작업 완료!");
+            rest();
+          } else {
+            setState(() {
+              _timer -= 1;
+            });
+          }
+          break;
+        case TimerStatus.resting:
+          if (_timer <= 0) {
+            setState(() {
+              _pomodoroCount += 0;
+            });
+            print("오늘 $_pomodoroCount개의 뽀모도로를 달성했습니다.");
+            t.cancel();
+            stop();
+          } else {
+            setState(() {
+              _timer -= 1;
+            });
+          }
+          break;
+        default:
+      }
     });
   }
 }
