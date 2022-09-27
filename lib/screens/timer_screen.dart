@@ -8,6 +8,22 @@ class TimerScreen extends StatefulWidget {
 }
 
 class _TimerScreen extends State<TimerScreen> {
+  static const WORK_SECONDS = 25;
+  static const REST_SECONDS = 5;
+
+  late TimerStatus _timerStatus;
+  late int _timer;
+  late int _pomodoroCount;
+
+  @override
+  void initStatus() {
+    super.initState();
+    _timerStatus = TimerStatus.stopped;
+    print(_timerStatus.toString());
+    _timer = WORK_SECONDS;
+    _pomodoroCount = 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> _runningButtons = [
@@ -75,5 +91,39 @@ class _TimerScreen extends State<TimerScreen> {
         ],
       ),
     );
+  }
+
+  void run() {
+    setState(() {
+      _timerStatus = TimerStatus.running;
+      print("[=>] " + _timerStatus.toString());
+      runTimer();
+    });
+  }
+
+  void paused() {
+    setState(() {
+      _timerStatus = TimerStatus.paused;
+      print("[=>] " + _timerStatus.toString());
+    });
+  }
+
+  void resume() {
+    run();
+  }
+
+  void rest() {
+    setState(() {
+      _timerStatus = TimerStatus.resting;
+      _timer = REST_SECONDS;
+      print("[=>] " + _timerStatus.toString());
+    });
+  }
+
+  void stop() {
+    setState(() {
+      _timerStatus = TimerStatus.stopped;
+      print("[=>] " + _timerStatus.toString());
+    });
   }
 }
