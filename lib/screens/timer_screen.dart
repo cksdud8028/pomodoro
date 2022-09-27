@@ -1,6 +1,6 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
+
+enum TimerStatus { running, paused, stopped, resting }
 
 class TimerScreen extends StatefulWidget {
   @override
