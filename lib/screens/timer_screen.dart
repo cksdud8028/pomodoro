@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:sprintf/sprintf.dart';
 
 enum TimerStatus { running, paused, stopped, resting }
 
@@ -30,16 +31,16 @@ class _TimerScreen extends State<TimerScreen> {
   Widget build(BuildContext context) {
     final List<Widget> _runningButtons = [
       ElevatedButton(
-        onPressed: () {},
+        onPressed: _timerStatus == TimerStatus.paused ? resume : paused,
         child: Text(
-          1 == 2 ? '계속하기' : '일시정지',
+          _timerStatus == TimerStatus.paused ? '계속하기' : '일시정지',
           style: TextStyle(color: Colors.white, fontSize: 16),
         ),
         style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
       ),
       Padding(padding: EdgeInsets.all(20)),
       ElevatedButton(
-        onPressed: () {},
+        onPressed: stop,
         child: Text(
           '포기하기',
           style: TextStyle(fontSize: 16),
@@ -50,18 +51,22 @@ class _TimerScreen extends State<TimerScreen> {
 
     final List<Widget> _stoppedButtons = [
       ElevatedButton(
-        onPressed: () {},
+        onPressed: run,
         child: Text(
           '시작하기',
           style: TextStyle(color: Colors.white),
         ),
         style: ElevatedButton.styleFrom(
-            backgroundColor: 1 == 2 ? Colors.green : Colors.blue),
+            backgroundColor: _timerStatus == TimerStatus.resting
+                ? Colors.green
+                : Colors.blue),
       )
     ];
     return Scaffold(
       appBar: AppBar(
         title: Text('뽀모도로 타이머'),
+        backgroundColor:
+            _timerStatus == TimerStatus.resting ? Colors.green : Colors.blue,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -71,7 +76,7 @@ class _TimerScreen extends State<TimerScreen> {
             width: MediaQuery.of(context).size.width * 0.6,
             child: Center(
               child: Text(
-                '00:00',
+                secondToString(_timer),
                 style: const TextStyle(
                     color: Colors.white,
                     fontSize: 48,
@@ -80,13 +85,15 @@ class _TimerScreen extends State<TimerScreen> {
             ),
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: 1 == 2 ? Colors.green : Colors.blue),
+                color: _timerStatus == TimerStatus.resting
+                    ? Colors.green
+                    : Colors.blue),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: 1 == 2
+            children: _timerStatus == TimerStatus.resting
                 ? const []
-                : 1 == 2
+                : _timerStatus == TimerStatus.stopped
                     ? _stoppedButtons
                     : _runningButtons,
           )
@@ -166,5 +173,9 @@ class _TimerScreen extends State<TimerScreen> {
         default:
       }
     });
+  }
+
+  String secondToString(int second) {
+    return sprintf("%02d:%02d", [second ~/ 60, second % 60]);
   }
 }
